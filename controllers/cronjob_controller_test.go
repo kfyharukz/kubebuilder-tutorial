@@ -30,7 +30,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 
 	batchv1 "github.com/kfyharukz/kubebuilder-tutorial/api/v1"
-	kbatch "k8s.io/api/batch/v1"
 )
 
 func testCronjobReconcile() {
@@ -51,10 +50,7 @@ func testCronjobReconcile() {
 			Scheme: mgr.GetScheme(),
 		}
 
-		err = ctrl.NewControllerManagedBy(mgr).
-			For(&batchv1.CronJob{}).
-			Owns(&kbatch.Job{}).
-			Complete(rc)
+		err = rc.SetupWithManager(mgr)
 		Expect(err).NotTo(HaveOccurred())
 
 		stopMgr, mgrStopped = StartTestManager(mgr)
